@@ -1,0 +1,12 @@
+{
+  "user_name": "SuperAdmin",
+  "full_name": "SuperAdmin",
+  "password": "SuperAdmin",
+  "gender": "MALE",
+  "state": "TamilNadu",
+  "mobile_no": 9999999999,
+  "email":"superAdmin@dfc100.com",
+  "date_of_birth": "16/03/1980",
+  "position": "0",
+  "referral_id": -2
+}
