@@ -127,28 +127,97 @@ create table  dfc.user_payment (
     paid_status VARCHAR(20)  null,
     paid_date TIMESTAMP(0) null,
     screenshot_path text null,
-    confirmation_status VARCHAR(20) null,
     confirmation_date TIMESTAMP(0) null,
     confirmed_by text null,
+    transaction_date TIMESTAMP(0) null,
+    transaction_id VARCHAR(50) null,
     created_dt TIMESTAMP(0) null default now(),
     updated_dt TIMESTAMP(0) null,
     primary key (user_payment_id)
-	,CONSTRAINT fk_user_payment_sender
-         	  FOREIGN KEY (sender_id)
-         	  REFERENCES dfc.user (user_id)
+         );
+
+-- -------------------------------------------
+-- Table dfc.user_tube
+-- -------------------------------------------
+create table  dfc.user_tube (
+	user_tube_id serial not null,
+	star_id BIGINT not null,
+    user_id BIGINT not null,
+    user_payment_id BIGINT null,
+    status VARCHAR(20)  null,
+    in_progress_date TIMESTAMP(0) null,
+    completed_date TIMESTAMP(0) null,
+    created_dt TIMESTAMP(0) null default now(),
+    updated_dt TIMESTAMP(0) null,
+    primary key (user_tube_id)
+	,CONSTRAINT fk_user_tube_user_payment
+         	  FOREIGN KEY (user_payment_id)
+         	  REFERENCES dfc.user_payment (user_payment_id)
          	  ON DELETE CASCADE
          	  ON UPDATE NO ACTION
-     ,CONSTRAINT fk_user_payment_receiver
-               	  FOREIGN KEY (receiver_id)
+     ,CONSTRAINT fk_user_tube_user
+               	  FOREIGN KEY (user_id)
                	  REFERENCES dfc.user (user_id)
                	  ON DELETE CASCADE
                	  ON UPDATE NO ACTION
-
          );
 
-    CREATE INDEX fk_user_payment_sender_idx ON dfc.user_payment (sender_id ASC);
-    CREATE INDEX fk_user_payment_receiver_idx ON dfc.user_payment (receiver_id ASC);
+    CREATE INDEX fk_user_tube_user_payment_idx ON dfc.user_tube (user_payment_id ASC);
+    CREATE INDEX fk_user_tube_user_idx ON dfc.user_tube (user_id ASC);
 
+-- -------------------------------------------
+-- Table dfc.user_loan
+-- -------------------------------------------
+create table  dfc.user_loan (
+	user_loan_id serial not null,
+	star_id SMALLINT not null,
+    user_id SMALLINT not null,
+    loan_amount BIGINT not null,
+    loan_currency VARCHAR(10) not null,
+    loan_requested_date TIMESTAMP(0) not null,
+    loan_screenshot_path text null,
+    loan_confirmed_date TIMESTAMP(0) null,
+    transaction_date TIMESTAMP(0) null,
+    transaction_id VARCHAR(50) null,
+    loan_status VARCHAR(20)  not null,
+    created_dt TIMESTAMP(0) null default now(),
+    updated_dt TIMESTAMP(0) null,
+    primary key (user_loan_id)
+    ,CONSTRAINT fk_user_loan_user
+               	  FOREIGN KEY (user_id)
+               	  REFERENCES dfc.user (user_id)
+               	  ON DELETE CASCADE
+               	  ON UPDATE NO ACTION
+         );
+
+    CREATE INDEX fk_user_user_loan_idx ON dfc.user_tube (user_id ASC);
+
+-- -------------------------------------------
+-- Table dfc.user_loan_repayment
+-- -------------------------------------------
+create table  dfc.user_loan_repayment (
+	user_loan_repayment_id serial not null,
+	user_loan_id SMALLINT not null,
+    ewi_amount SMALLINT not null,
+    ewi_due_date TIMESTAMP(0) not null,
+    ewi_paid_date TIMESTAMP(0) null,
+    ewi_status VARCHAR(20)  not null,
+    ewi_screenshot_path text null,
+    ewi_confirmed_date TIMESTAMP(0) null,
+    ewi_action VARCHAR(20)   null,
+    transaction_date TIMESTAMP(0) null,
+    transaction_id VARCHAR(50) null,
+    created_dt TIMESTAMP(0) null default now(),
+    updated_dt TIMESTAMP(0) null,
+    primary key (user_loan_repayment_id)
+    ,CONSTRAINT fk_user_loan_repayment_user_loan
+               	  FOREIGN KEY (user_loan_id)
+               	  REFERENCES dfc.user_loan (user_loan_id)
+               	  ON DELETE CASCADE
+               	  ON UPDATE NO ACTION
+         );
+
+    CREATE INDEX fk_user_loan_repayment_user_loan_idx ON dfc.user_loan (user_loan_id ASC);
 
 -- -------------------------------------------
 -- Table dfc.verification_token

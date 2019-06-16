@@ -30,8 +30,6 @@ public class UserPaymentDto {
 
 	private String screenshotPath;
 
-	private String confirmationStatus;
-
 	private Timestamp confirmationDate;
 
 	private String confirmedBy;
@@ -41,6 +39,10 @@ public class UserPaymentDto {
 	private Integer receiverId;
 
 	private String senderFullName;
+
+	private String senderUserName;
+
+	private String receiverUserName;
 
 	private String receiverFullName;
 

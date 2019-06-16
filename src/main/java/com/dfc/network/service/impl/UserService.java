@@ -2,6 +2,7 @@ package com.dfc.network.service.impl;
 
 import com.dfc.network.constants.DfcConstants;
 import com.dfc.network.dto.UserDto;
+import com.dfc.network.event.PaymentConfirmationEventPublisher;
 import com.dfc.network.exception.CustomMessageException;
 import com.dfc.network.helper.UserBinaryInfoHelper;
 import com.dfc.network.helper.UserHelper;
@@ -48,6 +49,9 @@ public class UserService implements IUserService, UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private PaymentConfirmationEventPublisher paymentConfirmationEventPublisher;
+
 /*
 
 
@@ -90,11 +94,11 @@ public class UserService implements IUserService, UserDetailsService {
     public User registerNewUserAccount(UserDto userDto)
             throws CustomMessageException {
         userRegistrationValidator.validate(userDto);
-        userDto.setStatus(UserDto.UserStatus.INITATED);
+        userDto.setStatus(DfcConstants.USER_STATUS.INITATED.name());
         User user = userHelper.saveUser(userDto);
         userSunFlowerInfoHelper.createUserSunflowerInfo(userDto, user);
-        userBinaryInfoHelper.createUserBinaryInfo(userDto, user);
         userPaymentHelper.createPaymentRecords(userDto, user);
+
         return user;
     }
 
@@ -181,7 +185,7 @@ public class UserService implements IUserService, UserDetailsService {
     @Transactional
     public User registerAdminNewUserAccount(UserDto userDto) {
         userDto.setReferralId(0);
-        userDto.setStatus(UserDto.UserStatus.ACTIVE);
+        userDto.setStatus(DfcConstants.USER_STATUS.ACTIVE.name());
         User user = userHelper.saveUser(userDto);
         UserSunflowerInfo userSunFlowerInfo = new UserSunflowerInfo();
         userSunFlowerInfo.setReferralUserId(0);
@@ -198,7 +202,7 @@ public class UserService implements IUserService, UserDetailsService {
 
     @Transactional
     public User registerSuperAdminNewUserAccount(UserDto userDto) {
-        userDto.setStatus(UserDto.UserStatus.ACTIVE);
+        userDto.setStatus(DfcConstants.USER_STATUS.ACTIVE.name());
         User user = userHelper.saveUser(userDto);
         return user;
     }

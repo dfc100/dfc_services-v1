@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -33,7 +34,12 @@ public class UserHelper {
     }
 
     public Optional<User> findById(Integer id) {
-        return userRepository.findById(id);
+        return Optional.of(userRepository.findByUserId(id));
+    }
+
+
+    public List<User> findByReferralId(Integer id) {
+        return userRepository.findByReferralUserId(id);
     }
 
     public User saveUser(User user) {
@@ -44,7 +50,7 @@ public class UserHelper {
     public User saveUser(UserDto userDto) {
         User user = new User();
         BeanUtils.copyProperties(userDto, user);
-        user.setStatus(userDto.getStatus().name());
+        user.setStatus(userDto.getStatus());
         user.setReferralUserId(userDto.getReferralId());
         user.setReferralBinaryPosition(userDto.getPosition());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));

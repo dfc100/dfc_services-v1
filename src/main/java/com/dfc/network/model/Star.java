@@ -9,6 +9,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 
 
 /**
@@ -52,9 +53,5 @@ public class Star extends AuditFieldEntity implements Serializable {
 	private Integer bonusAmount;
 
 	private Integer weeklyCapping;
-
-	//bi-directional one-to-one association to User
-	@OneToOne(mappedBy="star")
-	private User user;
 
 }

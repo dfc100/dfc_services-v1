@@ -7,7 +7,11 @@ import java.util.List;
 
 public interface UserPaymentRepository extends JpaRepository<UserPayment, Integer> {
 
-    List<UserPayment> findBySenderUserId(Integer senderUserId);
+    List<UserPayment> findBySenderId(Integer senderUserId);
 
-    List<UserPayment> findByReceiverUserId(Integer senderUserId);
+    List<UserPayment> findByReceiverId(Integer receiverUserId);
+
+    List<UserPayment> findByReceiverIdAndPaidStatus(Integer receiverUserId, String paidStatus);
+
+    UserPayment findByUserPaymentId(Integer id);
 }

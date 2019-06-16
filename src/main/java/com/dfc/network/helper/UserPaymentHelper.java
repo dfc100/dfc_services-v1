@@ -29,9 +29,9 @@ public class UserPaymentHelper {
     private UserHelper userHelper;
 
     public void createPaymentRecords(UserDto userDto, User user) {
-        UserSunflowerInfo userSunFlowerInfo = new UserSunflowerInfo();
-        userSunFlowerInfo.setReferralUserId(userDto.getReferralId());
-        userSunFlowerInfo.setUser(user);
+        //UserSunflowerInfo userSunFlowerInfo = new UserSunflowerInfo();
+        //userSunFlowerInfo.setReferralUserId(userDto.getReferralId());
+        //userSunFlowerInfo.setUser(user);
         List<PaymentMaster> paymentMasters = paymentMasterRepository.findAll();
         Map<String, Long> paymentMasterMap = convertPaymentMastersToMap(paymentMasters);
         savePaymentDetails(user, user, 1, paymentMasterMap);
@@ -39,13 +39,13 @@ public class UserPaymentHelper {
     }
 
     private void saveAdminPaymentDetail(User user, Map<String, Long> paymentMasterMap) {
-        Optional<User> optionalUser = userHelper.findById(1);
+        //Optional<User> optionalUser = userHelper.findById(1);
         UserPayment userPayment = new UserPayment();
-        userPayment.setSender(user);
-        userPayment.setReceiver(optionalUser.get());
+        userPayment.setSenderId(user.getUserId());
+        userPayment.setReceiverId(1);
         userPayment.setLevel(DfcConstants.ADMIN);
         userPayment.setValue(paymentMasterMap.get(DfcConstants.ADMIN));
-        userPayment.setPaidStatus(DfcConstants.PAID_STATUS.NOT_PAID.name());
+        userPayment.setPaidStatus(DfcConstants.PAYMENT_STATUS.NOT_PAID.name());
         userPaymentRepository.save(userPayment);
     }
 
@@ -66,11 +66,11 @@ public class UserPaymentHelper {
             Long paymentValue = paymentMasterMap.get(String.valueOf(start));
             if (null != paymentValue) {
                 UserPayment userPayment = new UserPayment();
-                userPayment.setSender(user);
-                userPayment.setReceiver(parentUser);
+                userPayment.setSenderId(user.getUserId());
+                userPayment.setReceiverId(parentUser.getUserId());
                 userPayment.setLevel(String.valueOf(start));
                 userPayment.setValue(paymentValue);
-                userPayment.setPaidStatus(DfcConstants.PAID_STATUS.NOT_PAID.name());
+                userPayment.setPaidStatus(DfcConstants.PAYMENT_STATUS.NOT_PAID.name());
                 userPaymentRepository.save(userPayment);
             }
             start++;
@@ -79,16 +79,19 @@ public class UserPaymentHelper {
     }
 
     public  List<UserPayment> findBySenderUserId(Integer userId) {
-        return userPaymentRepository.findBySenderUserId(userId);
+        return userPaymentRepository.findBySenderId(userId);
     }
 
     public  List<UserPayment> findByReceiverUserId(Integer userId) {
-        return userPaymentRepository.findByReceiverUserId(userId);
+        return userPaymentRepository.findByReceiverId(userId);
     }
 
+    public  List<UserPayment> findByReceiverIdAndPaidStatus(Integer userId, String paidStatus) {
+        return userPaymentRepository.findByReceiverIdAndPaidStatus(userId, paidStatus);
+    }
 
     public  Optional<UserPayment> findById(Integer id) {
-        return userPaymentRepository.findById(id);
+        return Optional.of(userPaymentRepository.findByUserPaymentId(id));
     }
 
     public UserPayment save(UserPayment userPayment) {

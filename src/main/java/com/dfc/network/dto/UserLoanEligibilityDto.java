@@ -7,15 +7,34 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
 @JsonIgnoreProperties(ignoreUnknown=true)
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ConfirmPaymentDto {
+public class UserLoanEligibilityDto {
 
-    private Integer userId;
+	private Integer starId;
 
-    private Integer userPaymentId;
+	private String starName;
+
+	private Integer personalPreference;
+
+	private Integer eligibilityStar;
+
+	private Integer noOfLegs;
+
+	private Integer loanAmount;
+
+	private String currency;
+
+	private Integer ewiAmount;
+
+	private Integer ewiNoOfWeeks;
+
+	private String loanEligibilityStatus;
+
+	private Integer userId;
 
 }

@@ -70,14 +70,8 @@ public class UserDto {
     @NonNull
     private String position;
 
-    private UserStatus status;
+    private String status;
 
     private String eosFinId;
-
-    public enum UserStatus {
-        ACTIVE,
-        DEACTIVATED,
-        INITATED;
-    }
 
 }

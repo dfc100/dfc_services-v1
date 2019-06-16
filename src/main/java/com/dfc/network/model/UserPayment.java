@@ -39,20 +39,24 @@ public class UserPayment extends AuditFieldEntity implements Serializable {
 
 	private String screenshotPath;
 
-	private String confirmationStatus;
-
 	private Timestamp confirmationDate;
 
 	private String confirmedBy;
 
 	//bi-directional one-to-one association to User
-	@OneToOne
-	@JoinColumn(name="sender_id")
-	private User sender;
+	//@ManyToOne//(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	//@JoinColumn(name="sender_id", nullable=false, insertable=false, updatable=false)
+	private Integer senderId;
 
-	@OneToOne
-	@JoinColumn(name="receiver_id")
-	private User receiver;
+	//@ManyToOne
+	//@JoinColumn(name="receiver_id")
+	//@ManyToOne//(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	//@JoinColumn(name="receiver_id", nullable=false, insertable=false, updatable=false)
+	private Integer receiverId;
+
+	private String transactionId;
+
+	private Timestamp transactionDate;
 
 
 }

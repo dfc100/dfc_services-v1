@@ -21,18 +21,21 @@ public class UserBinaryInfoHelper {
 
 
     public void createUserBinaryInfo(UserDto userDto, User user) {
-        UserBinaryInfo userBinaryInfo = new UserBinaryInfo();
-        userBinaryInfo.setPosition(userDto.getPosition());
-        userBinaryInfo.setUser(user);
-        if ("D".equalsIgnoreCase(userDto.getPosition())) {
-            userBinaryInfo.setParentId(findLastUpdated(userDto));
+        if (userBinaryInfoRepository.findByUserUserId(user.getUserId()) == null) {
+            UserBinaryInfo userBinaryInfo = new UserBinaryInfo();
             userBinaryInfo.setPosition(userDto.getPosition());
-        } else {
-            userBinaryInfo.setParentId(getParentId(userDto.getReferralId(), userDto.getPosition()));
+            userBinaryInfo.setUser(user);
+            if ("D".equalsIgnoreCase(userDto.getPosition())) {
+                userBinaryInfo.setParentId(findLastUpdated(userDto));
+                userBinaryInfo.setPosition(userDto.getPosition());
+            } else {
+                userBinaryInfo.setParentId(getParentId(userDto.getReferralId(), userDto.getPosition()));
+            }
+            userBinaryInfoRepository.save(userBinaryInfo);
         }
-        userBinaryInfoRepository.save(userBinaryInfo);
 
     }
+
 
     private Integer findLastUpdated(UserDto userDto){
         int referralId = userDto.getReferralId();

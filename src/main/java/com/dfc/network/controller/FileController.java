@@ -2,6 +2,7 @@ package com.dfc.network.controller;
 
 import com.dfc.network.exception.CustomMessageException;
 import com.dfc.network.service.FileStorageService;
+import com.dfc.network.service.LoanAdminService;
 import com.dfc.network.service.UserPaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.sql.Timestamp;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -26,9 +28,12 @@ public class FileController {
     @Autowired
     private UserPaymentService userPaymentService;
 
+    @Autowired
+    private LoanAdminService loanAdminService;
+
 
     @PostMapping("/upload_file")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, Integer id) throws CustomMessageException{
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("id") Integer id, @RequestParam("transaction_id") String transactionId, @RequestParam("transaction_date") String transactionDate) throws CustomMessageException{
         String fileName = fileStorageService.storeFile(file);
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -37,7 +42,7 @@ public class FileController {
                 .toUriString();
 
         if (fileDownloadUri != null) {
-            if (null != userPaymentService.processPaymentScreenshotDetails(id, fileName)) {
+            if (null != userPaymentService.processPaymentScreenshotDetails(id, fileName, transactionId, transactionDate)) {
                 return new ResponseEntity<>("File uploaded successfully", HttpStatus.OK);
             } else{
                 throw new CustomMessageException(HttpStatus.NOT_FOUND, "The record could not be found. Please contact Admin");
@@ -46,6 +51,8 @@ public class FileController {
         return new ResponseEntity<>("File Upload Failed. Please contact Admin",HttpStatus.BAD_REQUEST);
 
     }
+
+
 
     /*@PostMapping("/uploadMultipleFiles")
     public List<UserPayment> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files, Integer id) throws CustomMessageException{

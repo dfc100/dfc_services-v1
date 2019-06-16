@@ -8,6 +8,8 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -69,7 +71,7 @@ public class User extends AuditFieldEntity implements Serializable {
 	private String eosFinId;
 
 	//bi-directional one-to-one association to User
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name="star_id")
 	private Star star;
 
@@ -87,4 +89,6 @@ public class User extends AuditFieldEntity implements Serializable {
 	@OneToOne(mappedBy="user")
 	private UserSunflowerInfo userSunflowerInfo;
 
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private Set<UserLoan> userLoans;
 }

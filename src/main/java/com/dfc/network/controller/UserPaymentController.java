@@ -29,27 +29,21 @@ public class UserPaymentController {
         } catch (Exception ex) {
             throw new CustomMessageException(HttpStatus.BAD_REQUEST, ex.getMessage());
         }
-        if (userPaymentDtos == null || userPaymentDtos.isEmpty()) {
-            throw new CustomMessageException(HttpStatus.NOT_FOUND, "No Mentor Payments available.");
-        }
         return new ResponseEntity<>(userPaymentDtos, HttpStatus.OK);
     }
 
     @GetMapping(value = "/get_mentor_payments")
-    public ResponseEntity<List<UserPaymentDto>> getMentorPayments(@RequestParam("user_id") final Integer userId) throws CustomMessageException{
+    public ResponseEntity<List<UserPaymentDto>> getMentorPayments(@RequestParam("user_id") final Integer userId, @RequestParam("paid_status") final String paidStatus) throws CustomMessageException{
         List<UserPaymentDto> userPaymentDtos;
         try {
-            userPaymentDtos = userPaymentService.getMentorPayments(userId);
+            userPaymentDtos = userPaymentService.getMentorPayments(userId, paidStatus);
         } catch (Exception ex) {
             throw new CustomMessageException(HttpStatus.BAD_REQUEST, ex.getMessage());
-        }
-        if (userPaymentDtos == null || userPaymentDtos.isEmpty()) {
-            throw new CustomMessageException(HttpStatus.NOT_FOUND, "No Mentor Payments available.");
         }
         return new ResponseEntity<>(userPaymentDtos, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/confirm_payment", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(value = "/confirm_mentor_fee", consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<String> confirmPayment(@RequestBody @Valid ConfirmPaymentDto confirmPaymentDto) throws CustomMessageException{
         UserPayment userPayment;
         try {
